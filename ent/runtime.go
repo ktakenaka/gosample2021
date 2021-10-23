@@ -16,8 +16,26 @@ import (
 func init() {
 	officeFields := schema.Office{}.Fields()
 	_ = officeFields
+	// officeDescCode is the schema descriptor for code field.
+	officeDescCode := officeFields[0].Descriptor()
+	// office.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	office.CodeValidator = func() func(string) error {
+		validators := officeDescCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(code string) error {
+			for _, fn := range fns {
+				if err := fn(code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// officeDescName is the schema descriptor for name field.
-	officeDescName := officeFields[0].Descriptor()
+	officeDescName := officeFields[1].Descriptor()
 	// office.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	office.NameValidator = func() func(string) error {
 		validators := officeDescName.Validators

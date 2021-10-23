@@ -35,6 +35,7 @@ type OfficeMutation struct {
 	op             Op
 	typ            string
 	id             *int
+	code           *string
 	name           *string
 	clearedFields  map[string]struct{}
 	samples        map[string]struct{}
@@ -122,6 +123,42 @@ func (m *OfficeMutation) ID() (id int, exists bool) {
 		return
 	}
 	return *m.id, true
+}
+
+// SetCode sets the "code" field.
+func (m *OfficeMutation) SetCode(s string) {
+	m.code = &s
+}
+
+// Code returns the value of the "code" field in the mutation.
+func (m *OfficeMutation) Code() (r string, exists bool) {
+	v := m.code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCode returns the old "code" field's value of the Office entity.
+// If the Office object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OfficeMutation) OldCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
+	}
+	return oldValue.Code, nil
+}
+
+// ResetCode resets all changes to the "code" field.
+func (m *OfficeMutation) ResetCode() {
+	m.code = nil
 }
 
 // SetName sets the "name" field.
@@ -233,7 +270,10 @@ func (m *OfficeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OfficeMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 2)
+	if m.code != nil {
+		fields = append(fields, office.FieldCode)
+	}
 	if m.name != nil {
 		fields = append(fields, office.FieldName)
 	}
@@ -245,6 +285,8 @@ func (m *OfficeMutation) Fields() []string {
 // schema.
 func (m *OfficeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case office.FieldCode:
+		return m.Code()
 	case office.FieldName:
 		return m.Name()
 	}
@@ -256,6 +298,8 @@ func (m *OfficeMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *OfficeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case office.FieldCode:
+		return m.OldCode(ctx)
 	case office.FieldName:
 		return m.OldName(ctx)
 	}
@@ -267,6 +311,13 @@ func (m *OfficeMutation) OldField(ctx context.Context, name string) (ent.Value, 
 // type.
 func (m *OfficeMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case office.FieldCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCode(v)
+		return nil
 	case office.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -323,6 +374,9 @@ func (m *OfficeMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *OfficeMutation) ResetField(name string) error {
 	switch name {
+	case office.FieldCode:
+		m.ResetCode()
+		return nil
 	case office.FieldName:
 		m.ResetName()
 		return nil

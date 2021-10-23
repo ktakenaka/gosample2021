@@ -11,6 +11,7 @@ var (
 	// OfficesColumns holds the columns for the "offices" table.
 	OfficesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 10},
 		{Name: "name", Type: field.TypeString, Size: 50},
 	}
 	// OfficesTable holds the schema information for the "offices" table.

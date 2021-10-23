@@ -15,6 +15,8 @@ type Office struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Code holds the value of the "code" field.
+	Code string `json:"code,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -47,7 +49,7 @@ func (*Office) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case office.FieldID:
 			values[i] = new(sql.NullInt64)
-		case office.FieldName:
+		case office.FieldCode, office.FieldName:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Office", columns[i])
@@ -70,6 +72,12 @@ func (o *Office) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			o.ID = int(value.Int64)
+		case office.FieldCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field code", values[i])
+			} else if value.Valid {
+				o.Code = value.String
+			}
 		case office.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -109,6 +117,8 @@ func (o *Office) String() string {
 	var builder strings.Builder
 	builder.WriteString("Office(")
 	builder.WriteString(fmt.Sprintf("id=%v", o.ID))
+	builder.WriteString(", code=")
+	builder.WriteString(o.Code)
 	builder.WriteString(", name=")
 	builder.WriteString(o.Name)
 	builder.WriteByte(')')

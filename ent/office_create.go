@@ -20,6 +20,12 @@ type OfficeCreate struct {
 	hooks    []Hook
 }
 
+// SetCode sets the "code" field.
+func (oc *OfficeCreate) SetCode(s string) *OfficeCreate {
+	oc.mutation.SetCode(s)
+	return oc
+}
+
 // SetName sets the "name" field.
 func (oc *OfficeCreate) SetName(s string) *OfficeCreate {
 	oc.mutation.SetName(s)
@@ -111,6 +117,14 @@ func (oc *OfficeCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oc *OfficeCreate) check() error {
+	if _, ok := oc.mutation.Code(); !ok {
+		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "code"`)}
+	}
+	if v, ok := oc.mutation.Code(); ok {
+		if err := office.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "code": %w`, err)}
+		}
+	}
 	if _, ok := oc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "name"`)}
 	}
@@ -146,6 +160,14 @@ func (oc *OfficeCreate) createSpec() (*Office, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := oc.mutation.Code(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: office.FieldCode,
+		})
+		_node.Code = value
+	}
 	if value, ok := oc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,

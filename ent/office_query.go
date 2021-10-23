@@ -291,12 +291,12 @@ func (oq *OfficeQuery) WithSamples(opts ...func(*SampleQuery)) *OfficeQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Code string `json:"code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Office.Query().
-//		GroupBy(office.FieldName).
+//		GroupBy(office.FieldCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -318,11 +318,11 @@ func (oq *OfficeQuery) GroupBy(field string, fields ...string) *OfficeGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Code string `json:"code,omitempty"`
 //	}
 //
 //	client.Office.Query().
-//		Select(office.FieldName).
+//		Select(office.FieldCode).
 //		Scan(ctx, &v)
 //
 func (oq *OfficeQuery) Select(fields ...string) *OfficeSelect {

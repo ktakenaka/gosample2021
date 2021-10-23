@@ -15,6 +15,10 @@ type Office struct {
 // Fields of the Office.
 func (Office) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("code").
+			NotEmpty().
+			MaxLen(10).
+			Unique(),
 		field.String("name").
 			NotEmpty().
 			MaxLen(50),

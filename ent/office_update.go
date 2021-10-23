@@ -27,6 +27,12 @@ func (ou *OfficeUpdate) Where(ps ...predicate.Office) *OfficeUpdate {
 	return ou
 }
 
+// SetCode sets the "code" field.
+func (ou *OfficeUpdate) SetCode(s string) *OfficeUpdate {
+	ou.mutation.SetCode(s)
+	return ou
+}
+
 // SetName sets the "name" field.
 func (ou *OfficeUpdate) SetName(s string) *OfficeUpdate {
 	ou.mutation.SetName(s)
@@ -136,6 +142,11 @@ func (ou *OfficeUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (ou *OfficeUpdate) check() error {
+	if v, ok := ou.mutation.Code(); ok {
+		if err := office.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf("ent: validator failed for field \"code\": %w", err)}
+		}
+	}
 	if v, ok := ou.mutation.Name(); ok {
 		if err := office.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
@@ -161,6 +172,13 @@ func (ou *OfficeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ou.mutation.Code(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: office.FieldCode,
+		})
 	}
 	if value, ok := ou.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -240,6 +258,12 @@ type OfficeUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *OfficeMutation
+}
+
+// SetCode sets the "code" field.
+func (ouo *OfficeUpdateOne) SetCode(s string) *OfficeUpdateOne {
+	ouo.mutation.SetCode(s)
+	return ouo
 }
 
 // SetName sets the "name" field.
@@ -358,6 +382,11 @@ func (ouo *OfficeUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (ouo *OfficeUpdateOne) check() error {
+	if v, ok := ouo.mutation.Code(); ok {
+		if err := office.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf("ent: validator failed for field \"code\": %w", err)}
+		}
+	}
 	if v, ok := ouo.mutation.Name(); ok {
 		if err := office.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
@@ -400,6 +429,13 @@ func (ouo *OfficeUpdateOne) sqlSave(ctx context.Context) (_node *Office, err err
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ouo.mutation.Code(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: office.FieldCode,
+		})
 	}
 	if value, ok := ouo.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
