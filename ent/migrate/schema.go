@@ -11,7 +11,7 @@ var (
 	// OfficesColumns holds the columns for the "offices" table.
 	OfficesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString, Unique: true, Size: 25},
+		{Name: "name", Type: field.TypeString, Size: 50},
 	}
 	// OfficesTable holds the schema information for the "offices" table.
 	OfficesTable = &schema.Table{
@@ -19,11 +19,52 @@ var (
 		Columns:    OfficesColumns,
 		PrimaryKey: []*schema.Column{OfficesColumns[0]},
 	}
+	// SamplesColumns holds the columns for the "samples" table.
+	SamplesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "office_id", Type: field.TypeInt},
+		{Name: "code", Type: field.TypeString, Size: 20},
+		{Name: "size", Type: field.TypeEnum, Enums: []string{"small", "medium", "big"}},
+		{Name: "amount", Type: field.TypeFloat64, SchemaType: map[string]string{"mysql": "decimal(6,2)"}},
+		{Name: "memo", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "url", Type: field.TypeJSON, Nullable: true},
+		{Name: "active", Type: field.TypeBool, Default: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// SamplesTable holds the schema information for the "samples" table.
+	SamplesTable = &schema.Table{
+		Name:       "samples",
+		Columns:    SamplesColumns,
+		PrimaryKey: []*schema.Column{SamplesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "samples_offices_samples",
+				Columns:    []*schema.Column{SamplesColumns[1]},
+				RefColumns: []*schema.Column{OfficesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sample_created_at",
+				Unique:  false,
+				Columns: []*schema.Column{SamplesColumns[8]},
+			},
+			{
+				Name:    "sample_office_id_code",
+				Unique:  true,
+				Columns: []*schema.Column{SamplesColumns[1], SamplesColumns[2]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		OfficesTable,
+		SamplesTable,
 	}
 )
 
 func init() {
+	SamplesTable.ForeignKeys[0].RefTable = OfficesTable
 }

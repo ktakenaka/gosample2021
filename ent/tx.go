@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// Office is the client for interacting with the Office builders.
 	Office *OfficeClient
+	// Sample is the client for interacting with the Sample builders.
+	Sample *SampleClient
 
 	// lazily loaded.
 	client     *Client
@@ -150,6 +152,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Office = NewOfficeClient(tx.config)
+	tx.Sample = NewSampleClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

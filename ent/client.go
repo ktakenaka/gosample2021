@@ -10,9 +10,11 @@ import (
 	"github.com/ktakenaka/gosample/ent/migrate"
 
 	"github.com/ktakenaka/gosample/ent/office"
+	"github.com/ktakenaka/gosample/ent/sample"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -22,6 +24,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Office is the client for interacting with the Office builders.
 	Office *OfficeClient
+	// Sample is the client for interacting with the Sample builders.
+	Sample *SampleClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -36,6 +40,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Office = NewOfficeClient(c.config)
+	c.Sample = NewSampleClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -70,6 +75,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:    ctx,
 		config: cfg,
 		Office: NewOfficeClient(cfg),
+		Sample: NewSampleClient(cfg),
 	}, nil
 }
 
@@ -89,6 +95,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		config: cfg,
 		Office: NewOfficeClient(cfg),
+		Sample: NewSampleClient(cfg),
 	}, nil
 }
 
@@ -119,6 +126,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Office.Use(hooks...)
+	c.Sample.Use(hooks...)
 }
 
 // OfficeClient is a client for the Office schema.
@@ -206,7 +214,113 @@ func (c *OfficeClient) GetX(ctx context.Context, id int) *Office {
 	return obj
 }
 
+// QuerySamples queries the samples edge of a Office.
+func (c *OfficeClient) QuerySamples(o *Office) *SampleQuery {
+	query := &SampleQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(office.Table, office.FieldID, id),
+			sqlgraph.To(sample.Table, sample.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, office.SamplesTable, office.SamplesColumn),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *OfficeClient) Hooks() []Hook {
 	return c.hooks.Office
+}
+
+// SampleClient is a client for the Sample schema.
+type SampleClient struct {
+	config
+}
+
+// NewSampleClient returns a client for the Sample from the given config.
+func NewSampleClient(c config) *SampleClient {
+	return &SampleClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sample.Hooks(f(g(h())))`.
+func (c *SampleClient) Use(hooks ...Hook) {
+	c.hooks.Sample = append(c.hooks.Sample, hooks...)
+}
+
+// Create returns a create builder for Sample.
+func (c *SampleClient) Create() *SampleCreate {
+	mutation := newSampleMutation(c.config, OpCreate)
+	return &SampleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Sample entities.
+func (c *SampleClient) CreateBulk(builders ...*SampleCreate) *SampleCreateBulk {
+	return &SampleCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Sample.
+func (c *SampleClient) Update() *SampleUpdate {
+	mutation := newSampleMutation(c.config, OpUpdate)
+	return &SampleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SampleClient) UpdateOne(s *Sample) *SampleUpdateOne {
+	mutation := newSampleMutation(c.config, OpUpdateOne, withSample(s))
+	return &SampleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SampleClient) UpdateOneID(id string) *SampleUpdateOne {
+	mutation := newSampleMutation(c.config, OpUpdateOne, withSampleID(id))
+	return &SampleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Sample.
+func (c *SampleClient) Delete() *SampleDelete {
+	mutation := newSampleMutation(c.config, OpDelete)
+	return &SampleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *SampleClient) DeleteOne(s *Sample) *SampleDeleteOne {
+	return c.DeleteOneID(s.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *SampleClient) DeleteOneID(id string) *SampleDeleteOne {
+	builder := c.Delete().Where(sample.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SampleDeleteOne{builder}
+}
+
+// Query returns a query builder for Sample.
+func (c *SampleClient) Query() *SampleQuery {
+	return &SampleQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Sample entity by its id.
+func (c *SampleClient) Get(ctx context.Context, id string) (*Sample, error) {
+	return c.Query().Where(sample.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SampleClient) GetX(ctx context.Context, id string) *Sample {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SampleClient) Hooks() []Hook {
+	return c.hooks.Sample
 }

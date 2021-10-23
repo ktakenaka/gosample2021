@@ -22,6 +22,19 @@ func (f OfficeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return f(ctx, mv)
 }
 
+// The SampleFunc type is an adapter to allow the use of ordinary
+// function as Sample mutator.
+type SampleFunc func(context.Context, *ent.SampleMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SampleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SampleMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SampleMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // Condition is a hook condition function.
 type Condition func(context.Context, ent.Mutation) bool
 

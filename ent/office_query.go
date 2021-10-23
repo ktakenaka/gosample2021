@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -13,6 +14,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/ktakenaka/gosample/ent/office"
 	"github.com/ktakenaka/gosample/ent/predicate"
+	"github.com/ktakenaka/gosample/ent/sample"
 )
 
 // OfficeQuery is the builder for querying Office entities.
@@ -24,6 +26,8 @@ type OfficeQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Office
+	// eager-loading edges.
+	withSamples *SampleQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +62,28 @@ func (oq *OfficeQuery) Unique(unique bool) *OfficeQuery {
 func (oq *OfficeQuery) Order(o ...OrderFunc) *OfficeQuery {
 	oq.order = append(oq.order, o...)
 	return oq
+}
+
+// QuerySamples chains the current query on the "samples" edge.
+func (oq *OfficeQuery) QuerySamples() *SampleQuery {
+	query := &SampleQuery{config: oq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := oq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := oq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(office.Table, office.FieldID, selector),
+			sqlgraph.To(sample.Table, sample.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, office.SamplesTable, office.SamplesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(oq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Office entity from the query.
@@ -236,15 +262,27 @@ func (oq *OfficeQuery) Clone() *OfficeQuery {
 		return nil
 	}
 	return &OfficeQuery{
-		config:     oq.config,
-		limit:      oq.limit,
-		offset:     oq.offset,
-		order:      append([]OrderFunc{}, oq.order...),
-		predicates: append([]predicate.Office{}, oq.predicates...),
+		config:      oq.config,
+		limit:       oq.limit,
+		offset:      oq.offset,
+		order:       append([]OrderFunc{}, oq.order...),
+		predicates:  append([]predicate.Office{}, oq.predicates...),
+		withSamples: oq.withSamples.Clone(),
 		// clone intermediate query.
 		sql:  oq.sql.Clone(),
 		path: oq.path,
 	}
+}
+
+// WithSamples tells the query-builder to eager-load the nodes that are connected to
+// the "samples" edge. The optional arguments are used to configure the query builder of the edge.
+func (oq *OfficeQuery) WithSamples(opts ...func(*SampleQuery)) *OfficeQuery {
+	query := &SampleQuery{config: oq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	oq.withSamples = query
+	return oq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -310,8 +348,11 @@ func (oq *OfficeQuery) prepareQuery(ctx context.Context) error {
 
 func (oq *OfficeQuery) sqlAll(ctx context.Context) ([]*Office, error) {
 	var (
-		nodes = []*Office{}
-		_spec = oq.querySpec()
+		nodes       = []*Office{}
+		_spec       = oq.querySpec()
+		loadedTypes = [1]bool{
+			oq.withSamples != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Office{config: oq.config}
@@ -323,6 +364,7 @@ func (oq *OfficeQuery) sqlAll(ctx context.Context) ([]*Office, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, oq.driver, _spec); err != nil {
@@ -331,6 +373,36 @@ func (oq *OfficeQuery) sqlAll(ctx context.Context) ([]*Office, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := oq.withSamples; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Office)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Samples = []*Sample{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Sample(func(s *sql.Selector) {
+			s.Where(sql.InValues(office.SamplesColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.office_id
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "office_id" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "office_id" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Samples = append(node.Edges.Samples, n)
+		}
+	}
+
 	return nodes, nil
 }
 

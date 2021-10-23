@@ -17,6 +17,27 @@ type Office struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the OfficeQuery when eager-loading is set.
+	Edges OfficeEdges `json:"edges"`
+}
+
+// OfficeEdges holds the relations/edges for other nodes in the graph.
+type OfficeEdges struct {
+	// Samples holds the value of the samples edge.
+	Samples []*Sample `json:"samples,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// SamplesOrErr returns the Samples value or an error if the edge
+// was not loaded in eager-loading.
+func (e OfficeEdges) SamplesOrErr() ([]*Sample, error) {
+	if e.loadedTypes[0] {
+		return e.Samples, nil
+	}
+	return nil, &NotLoadedError{edge: "samples"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -58,6 +79,11 @@ func (o *Office) assignValues(columns []string, values []interface{}) error {
 		}
 	}
 	return nil
+}
+
+// QuerySamples queries the "samples" edge of the Office entity.
+func (o *Office) QuerySamples() *SampleQuery {
+	return (&OfficeClient{config: o.config}).QuerySamples(o)
 }
 
 // Update returns a builder for updating this Office.

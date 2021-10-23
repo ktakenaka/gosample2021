@@ -9,8 +9,17 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// EdgeSamples holds the string denoting the samples edge name in mutations.
+	EdgeSamples = "samples"
 	// Table holds the table name of the office in the database.
 	Table = "offices"
+	// SamplesTable is the table that holds the samples relation/edge.
+	SamplesTable = "samples"
+	// SamplesInverseTable is the table name for the Sample entity.
+	// It exists in this package in order to avoid circular dependency with the "sample" package.
+	SamplesInverseTable = "samples"
+	// SamplesColumn is the table column denoting the samples relation/edge.
+	SamplesColumn = "office_id"
 )
 
 // Columns holds all SQL columns for office fields.

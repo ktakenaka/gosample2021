@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/ktakenaka/gosample/ent/office"
 	"github.com/ktakenaka/gosample/ent/predicate"
+	"github.com/ktakenaka/gosample/ent/sample"
 )
 
 // OfficeUpdate is the builder for updating Office entities.
@@ -32,9 +33,45 @@ func (ou *OfficeUpdate) SetName(s string) *OfficeUpdate {
 	return ou
 }
 
+// AddSampleIDs adds the "samples" edge to the Sample entity by IDs.
+func (ou *OfficeUpdate) AddSampleIDs(ids ...string) *OfficeUpdate {
+	ou.mutation.AddSampleIDs(ids...)
+	return ou
+}
+
+// AddSamples adds the "samples" edges to the Sample entity.
+func (ou *OfficeUpdate) AddSamples(s ...*Sample) *OfficeUpdate {
+	ids := make([]string, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return ou.AddSampleIDs(ids...)
+}
+
 // Mutation returns the OfficeMutation object of the builder.
 func (ou *OfficeUpdate) Mutation() *OfficeMutation {
 	return ou.mutation
+}
+
+// ClearSamples clears all "samples" edges to the Sample entity.
+func (ou *OfficeUpdate) ClearSamples() *OfficeUpdate {
+	ou.mutation.ClearSamples()
+	return ou
+}
+
+// RemoveSampleIDs removes the "samples" edge to Sample entities by IDs.
+func (ou *OfficeUpdate) RemoveSampleIDs(ids ...string) *OfficeUpdate {
+	ou.mutation.RemoveSampleIDs(ids...)
+	return ou
+}
+
+// RemoveSamples removes "samples" edges to Sample entities.
+func (ou *OfficeUpdate) RemoveSamples(s ...*Sample) *OfficeUpdate {
+	ids := make([]string, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return ou.RemoveSampleIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -132,6 +169,60 @@ func (ou *OfficeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: office.FieldName,
 		})
 	}
+	if ou.mutation.SamplesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   office.SamplesTable,
+			Columns: []string{office.SamplesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: sample.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.RemovedSamplesIDs(); len(nodes) > 0 && !ou.mutation.SamplesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   office.SamplesTable,
+			Columns: []string{office.SamplesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: sample.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.SamplesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   office.SamplesTable,
+			Columns: []string{office.SamplesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: sample.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ou.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{office.Label}
@@ -157,9 +248,45 @@ func (ouo *OfficeUpdateOne) SetName(s string) *OfficeUpdateOne {
 	return ouo
 }
 
+// AddSampleIDs adds the "samples" edge to the Sample entity by IDs.
+func (ouo *OfficeUpdateOne) AddSampleIDs(ids ...string) *OfficeUpdateOne {
+	ouo.mutation.AddSampleIDs(ids...)
+	return ouo
+}
+
+// AddSamples adds the "samples" edges to the Sample entity.
+func (ouo *OfficeUpdateOne) AddSamples(s ...*Sample) *OfficeUpdateOne {
+	ids := make([]string, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return ouo.AddSampleIDs(ids...)
+}
+
 // Mutation returns the OfficeMutation object of the builder.
 func (ouo *OfficeUpdateOne) Mutation() *OfficeMutation {
 	return ouo.mutation
+}
+
+// ClearSamples clears all "samples" edges to the Sample entity.
+func (ouo *OfficeUpdateOne) ClearSamples() *OfficeUpdateOne {
+	ouo.mutation.ClearSamples()
+	return ouo
+}
+
+// RemoveSampleIDs removes the "samples" edge to Sample entities by IDs.
+func (ouo *OfficeUpdateOne) RemoveSampleIDs(ids ...string) *OfficeUpdateOne {
+	ouo.mutation.RemoveSampleIDs(ids...)
+	return ouo
+}
+
+// RemoveSamples removes "samples" edges to Sample entities.
+func (ouo *OfficeUpdateOne) RemoveSamples(s ...*Sample) *OfficeUpdateOne {
+	ids := make([]string, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return ouo.RemoveSampleIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -280,6 +407,60 @@ func (ouo *OfficeUpdateOne) sqlSave(ctx context.Context) (_node *Office, err err
 			Value:  value,
 			Column: office.FieldName,
 		})
+	}
+	if ouo.mutation.SamplesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   office.SamplesTable,
+			Columns: []string{office.SamplesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: sample.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.RemovedSamplesIDs(); len(nodes) > 0 && !ouo.mutation.SamplesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   office.SamplesTable,
+			Columns: []string{office.SamplesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: sample.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.SamplesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   office.SamplesTable,
+			Columns: []string{office.SamplesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: sample.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Office{config: ouo.config}
 	_spec.Assign = _node.assignValues

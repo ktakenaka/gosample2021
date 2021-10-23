@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ktakenaka/gosample/ent/office"
+	"github.com/ktakenaka/gosample/ent/sample"
 )
 
 // OfficeCreate is the builder for creating a Office entity.
@@ -23,6 +24,21 @@ type OfficeCreate struct {
 func (oc *OfficeCreate) SetName(s string) *OfficeCreate {
 	oc.mutation.SetName(s)
 	return oc
+}
+
+// AddSampleIDs adds the "samples" edge to the Sample entity by IDs.
+func (oc *OfficeCreate) AddSampleIDs(ids ...string) *OfficeCreate {
+	oc.mutation.AddSampleIDs(ids...)
+	return oc
+}
+
+// AddSamples adds the "samples" edges to the Sample entity.
+func (oc *OfficeCreate) AddSamples(s ...*Sample) *OfficeCreate {
+	ids := make([]string, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return oc.AddSampleIDs(ids...)
 }
 
 // Mutation returns the OfficeMutation object of the builder.
@@ -137,6 +153,25 @@ func (oc *OfficeCreate) createSpec() (*Office, *sqlgraph.CreateSpec) {
 			Column: office.FieldName,
 		})
 		_node.Name = value
+	}
+	if nodes := oc.mutation.SamplesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   office.SamplesTable,
+			Columns: []string{office.SamplesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeString,
+					Column: sample.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

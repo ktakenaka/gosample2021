@@ -4,6 +4,7 @@ package office
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ktakenaka/gosample/ent/predicate"
 )
 
@@ -205,6 +206,34 @@ func NameEqualFold(v string) predicate.Office {
 func NameContainsFold(v string) predicate.Office {
 	return predicate.Office(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
+	})
+}
+
+// HasSamples applies the HasEdge predicate on the "samples" edge.
+func HasSamples() predicate.Office {
+	return predicate.Office(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SamplesTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SamplesTable, SamplesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSamplesWith applies the HasEdge predicate on the "samples" edge with a given conditions (other predicates).
+func HasSamplesWith(preds ...predicate.Sample) predicate.Office {
+	return predicate.Office(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(SamplesInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SamplesTable, SamplesColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

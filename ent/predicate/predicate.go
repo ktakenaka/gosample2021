@@ -8,3 +8,6 @@ import (
 
 // Office is the predicate function for office builders.
 type Office func(*sql.Selector)
+
+// Sample is the predicate function for sample builders.
+type Sample func(*sql.Selector)
