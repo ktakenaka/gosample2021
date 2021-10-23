@@ -17,6 +17,7 @@ type Sample struct {
 	ent.Schema
 }
 
+// TODO: Implement unique constraint within same office
 // Fields of the Sample.
 func (Sample) Fields() []ent.Field {
 	return []ent.Field{
@@ -25,7 +26,7 @@ func (Sample) Fields() []ent.Field {
 				return cuid.New()
 			}),
 		field.Int("office_id"),
-		field.String("code"). // TODO: Implement unique constraint within same office
+		field.String("code").
 			NotEmpty().
 			MaxLen(20),
 		field.Enum("size").

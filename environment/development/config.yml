@@ -1,6 +1,5 @@
-db:
-  user: gosample
-  passwd: password
-  host: database
-  port: 3306
-  db_name: gosample_development
+user: gosample
+password: password
+host: database
+port: 3306
+db_name: gosample_development
