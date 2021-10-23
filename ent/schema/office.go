@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // Office holds the schema definition for the Office entity.
@@ -33,5 +34,12 @@ func (Office) Edges() []ent.Edge {
 			Annotations(entsql.Annotation{
 				OnDelete: entsql.Cascade,
 			}),
+	}
+}
+
+// Indexes of the Office.
+func (Office) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("code"),
 	}
 }

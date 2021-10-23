@@ -19,6 +19,13 @@ var (
 		Name:       "offices",
 		Columns:    OfficesColumns,
 		PrimaryKey: []*schema.Column{OfficesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "office_code",
+				Unique:  false,
+				Columns: []*schema.Column{OfficesColumns[1]},
+			},
+		},
 	}
 	// SamplesColumns holds the columns for the "samples" table.
 	SamplesColumns = []*schema.Column{
