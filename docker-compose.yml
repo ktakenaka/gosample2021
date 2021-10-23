@@ -16,7 +16,7 @@ x-var: &DB_PORT
 services:
   app:
     build:
-      context: .
+      context: ./docker/app
       dockerfile: Dockerfile-dev
     tty: true
     ports:
