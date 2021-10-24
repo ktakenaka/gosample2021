@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/go-sql-driver/mysql"
 
@@ -24,7 +25,7 @@ type Config struct {
 
 	Options            map[string]string
 	IsIgnoreForeignKey bool
-	LogLevel           string
+	IsLogging          bool
 }
 
 const (
@@ -61,12 +62,18 @@ func New(cfg *Config) (*ent.Client, error) {
 		return nil, err
 	}
 
-	drv := entsql.OpenDB("mysql", db)
-	return ent.NewClient(ent.Driver(drv)), nil
+	drv := entsql.OpenDB(dialect.MySQL, db)
+	options := []ent.Option{ent.Driver(drv)}
+
+	if cfg.IsLogging {
+		options = append(options, ent.Debug())
+	}
+
+	return ent.NewClient(options...), nil
 }
 
 func connect(dst string, cfg *Config) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dst)
+	db, err := sql.Open(dialect.MySQL, dst)
 	if err != nil {
 		return nil, err
 	}

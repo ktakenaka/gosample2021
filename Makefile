@@ -20,3 +20,12 @@ ent-gen:
 
 migrate:
 	docker-compose exec app go run cmd/migrate/main.go
+
+srv:
+	docker-compose exec app go run cmd/srv/main.go
+
+example:
+	docker-compose exec app go run cmd/example/main.go
+
+fmt:
+	@go fmt ./...
