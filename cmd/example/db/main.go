@@ -2,18 +2,12 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
-	"net/http"
-	"net/url"
-	"time"
 
-	"github.com/ktakenaka/gosample/cmd/config"
-	"github.com/ktakenaka/gosample/cmd/db"
-	"github.com/ktakenaka/gosample/cmd/logger"
+	"github.com/ktakenaka/gosample/cmd/internal/config"
+	"github.com/ktakenaka/gosample/cmd/internal/db"
 	"github.com/ktakenaka/gosample/ent/office"
-	ifrLogger "github.com/ktakenaka/gosample/infrastructure/logger"
 )
 
 func main() {
@@ -40,20 +34,4 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("%#v", samples)
-
-	l, err := logger.Initialize(cfg)
-	if err != nil {
-		panic(err)
-	}
-	defer l.Close()
-
-	l.RequestErrorWithPerson(
-		"userID",
-		ifrLogger.WARN,
-		&http.Request{
-			Method: "GET",
-			URL:    &url.URL{Scheme: "https"},
-		},
-		errors.New("dummy error"),
-	)
 }

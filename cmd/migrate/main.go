@@ -6,8 +6,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/ktakenaka/gosample/cmd/config"
-	"github.com/ktakenaka/gosample/cmd/db"
+	"github.com/ktakenaka/gosample/cmd/internal/config"
+	"github.com/ktakenaka/gosample/cmd/internal/db"
 	"github.com/ktakenaka/gosample/ent/migrate"
 )
 
