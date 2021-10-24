@@ -4,3 +4,6 @@ db:
   host: ${DB_HOST}
   port: ${DB_PORT}
   db_name: gosample_development
+logger:
+  token: ${ROLLBAR_TOKEN}
+  environment: development
