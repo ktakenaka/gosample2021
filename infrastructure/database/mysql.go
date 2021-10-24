@@ -23,14 +23,12 @@ type Config struct {
 	MaxOpenConns    int
 	ConnMaxLifetime time.Duration
 
-	Options            map[string]string
-	IsIgnoreForeignKey bool
-	IsLogging          bool
+	Options   map[string]string
+	IsLogging bool
 }
 
 const (
-	conn          = "%s:%s@tcp(%s)/%s?collation=utf8mb4_bin&parseTime=true&charset=utf8mb4"
-	connWithoutFK = conn + "&foreign_key_checks=0"
+	conn = "%s:%s@tcp(%s)/%s?collation=utf8mb4_bin&parseTime=true&charset=utf8mb4"
 )
 
 const (
@@ -39,15 +37,13 @@ const (
 	defaultConnMaxLifetime = 20 * time.Second
 )
 
+type Client struct {
+	*ent.Client
+}
+
 // New connect to db
 func New(cfg *Config) (*ent.Client, error) {
-	var connStr string
-	if cfg.IsIgnoreForeignKey {
-		connStr = connWithoutFK
-	} else {
-		connStr = conn
-	}
-
+	connStr := conn
 	if cfg.Options != nil {
 		var options []string
 		for k, v := range cfg.Options {

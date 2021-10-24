@@ -33,4 +33,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
+
+	// TODO: apply migration on gosample_development
 }
