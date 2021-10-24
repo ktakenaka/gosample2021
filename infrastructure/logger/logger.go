@@ -46,6 +46,7 @@ func (l logger) RequestErrorWithPerson(
 	r *http.Request,
 	err error,
 ) {
+	// TODO: check whether it's goroutine safe
 	rollbar.SetPerson(userID, "", "")
 	rollbar.RequestError(level, r, err)
 }
@@ -57,6 +58,7 @@ func (l logger) RequestErrorWithExtrasAndPerson(
 	err error,
 	extras map[string]interface{},
 ) {
+	// TODO: check whether it's goroutine safe
 	rollbar.SetPerson(userID, "", "")
 	rollbar.RequestErrorWithExtras(level, r, err, extras)
 }
