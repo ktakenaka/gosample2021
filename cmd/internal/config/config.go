@@ -2,18 +2,17 @@ package config
 
 import (
 	"errors"
-	"os"
+	"flag"
 
-	cfg "github.com/ktakenaka/gosample/config"
+	conf "github.com/ktakenaka/gosample/config"
 )
 
-func Initialize() (cfg.Config, error) {
-	var cfgPath string
-	switch os.Getenv("ENV") {
-	case "development":
-		cfgPath = "environment/development/config.yml"
-	default:
-		return cfg.Config{}, errors.New("not having configuration")
+func Initialize() (conf.Config, error) {
+	configFilePath := flag.String("c", "", "config file path for app")
+	flag.Parse()
+	if configFilePath == nil {
+		return conf.Config{}, errors.New("Not having config file")
 	}
-	return cfg.New(cfgPath)
+
+	return conf.New(*configFilePath)
 }

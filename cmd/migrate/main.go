@@ -14,7 +14,7 @@ import (
 func main() {
 	cfg, err := config.Initialize()
 	if err != nil {
-		log.Fatalf("failed initializing cofig: %v", err)
+		panic(err)
 	}
 
 	client, err := db.Initialize(cfg)
