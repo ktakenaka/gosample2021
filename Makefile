@@ -20,6 +20,7 @@ ent-gen:
 
 migrate:
 	docker-compose exec app go run cmd/migrate/main.go -c "environment/development/config.yml"
+	docker-compose exec app go run cmd/migrate/main.go -c "environment/test/config.yml"
 
 srv:
 	docker-compose exec app go run cmd/srv/main.go
