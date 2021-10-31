@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ktakenaka/gosample/config"
-	"github.com/ktakenaka/gosample/ent"
-	"github.com/ktakenaka/gosample/infrastructure/database"
+	"github.com/ktakenaka/gosample2021/config"
+	"github.com/ktakenaka/gosample2021/ent"
+	"github.com/ktakenaka/gosample2021/infrastructure/database"
 )
 
 func GetClient(cfg config.Config) (client *ent.Client, release func()) {
-	cfg.DB.Options = map[string]string{"foreign_key_check": "0"}
+	// Put `map[string]string{"foreign_key_check": "0"}` to cfg.DB.Options
 	client, err := database.New(cfg.DB)
 	if err != nil {
 		panic(err)
@@ -29,7 +29,7 @@ func GetClient(cfg config.Config) (client *ent.Client, release func()) {
 
 func cleanDB(client *ent.Client) (err error) {
 	// TODO: get table names from INFORMATION_SCHEMA so that we don't need to define tables
-	// "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='gosample_test' AND TABLE_NAME != 'schema_migrations'"
+	// "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='gosample2021_test' AND TABLE_NAME != 'schema_migrations'"
 	ctx := context.TODO()
 	tx, err := client.Tx(ctx)
 	if err != nil {

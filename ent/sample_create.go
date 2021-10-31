@@ -11,7 +11,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/ktakenaka/gosample/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/sample"
 )
 
 // SampleCreate is the builder for creating a Sample entity.

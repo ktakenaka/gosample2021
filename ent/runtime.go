@@ -5,9 +5,9 @@ package ent
 import (
 	"time"
 
-	"github.com/ktakenaka/gosample/ent/office"
-	"github.com/ktakenaka/gosample/ent/sample"
-	"github.com/ktakenaka/gosample/ent/schema"
+	"github.com/ktakenaka/gosample2021/ent/office"
+	"github.com/ktakenaka/gosample2021/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

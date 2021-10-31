@@ -6,9 +6,9 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/ktakenaka/gosample/cmd/internal/config"
-	"github.com/ktakenaka/gosample/cmd/internal/db"
-	"github.com/ktakenaka/gosample/ent/migrate"
+	"github.com/ktakenaka/gosample2021/cmd/internal/config"
+	"github.com/ktakenaka/gosample2021/cmd/internal/db"
+	"github.com/ktakenaka/gosample2021/ent/migrate"
 )
 
 func main() {
@@ -34,5 +34,5 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	// TODO: apply migration on gosample_development
+	// TODO: apply migration on gosample2021_development
 }

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ktakenaka/gosample/ent/migrate"
+	"github.com/ktakenaka/gosample2021/ent/migrate"
 
-	"github.com/ktakenaka/gosample/ent/office"
-	"github.com/ktakenaka/gosample/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/office"
+	"github.com/ktakenaka/gosample2021/ent/sample"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

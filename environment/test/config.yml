@@ -3,7 +3,7 @@ db:
   password: ${DB_PASSWORD}
   host: ${DB_HOST}
   port: ${DB_PORT}
-  db_name: gosample_test
+  db_name: gosample2021_test
 logger:
   token: dummy
   environment: test

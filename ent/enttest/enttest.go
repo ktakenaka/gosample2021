@@ -5,9 +5,9 @@ package enttest
 import (
 	"context"
 
-	"github.com/ktakenaka/gosample/ent"
+	"github.com/ktakenaka/gosample2021/ent"
 	// required by schema hooks.
-	_ "github.com/ktakenaka/gosample/ent/runtime"
+	_ "github.com/ktakenaka/gosample2021/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

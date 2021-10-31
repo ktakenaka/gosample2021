@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/ktakenaka/gosample/cmd/internal/config"
-	"github.com/ktakenaka/gosample/cmd/internal/logger"
-	ifrLogger "github.com/ktakenaka/gosample/infrastructure/logger"
+	"github.com/ktakenaka/gosample2021/cmd/internal/config"
+	"github.com/ktakenaka/gosample2021/cmd/internal/logger"
+	ifrLogger "github.com/ktakenaka/gosample2021/infrastructure/logger"
 )
 
 func main() {
