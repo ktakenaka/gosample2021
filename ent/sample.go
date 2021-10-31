@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/ktakenaka/gosample/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/sample"
 )
 
 // Sample is the model entity for the Sample schema.

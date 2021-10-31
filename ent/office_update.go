@@ -9,9 +9,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/ktakenaka/gosample/ent/office"
-	"github.com/ktakenaka/gosample/ent/predicate"
-	"github.com/ktakenaka/gosample/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/office"
+	"github.com/ktakenaka/gosample2021/ent/predicate"
+	"github.com/ktakenaka/gosample2021/ent/sample"
 )
 
 // OfficeUpdate is the builder for updating Office entities.

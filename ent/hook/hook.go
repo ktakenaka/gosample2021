@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ktakenaka/gosample/ent"
+	"github.com/ktakenaka/gosample2021/ent"
 )
 
 // The OfficeFunc type is an adapter to allow the use of ordinary

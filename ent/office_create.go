@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/ktakenaka/gosample/ent/office"
-	"github.com/ktakenaka/gosample/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/office"
+	"github.com/ktakenaka/gosample2021/ent/sample"
 )
 
 // OfficeCreate is the builder for creating a Office entity.

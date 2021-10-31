@@ -5,7 +5,7 @@ package office
 import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/ktakenaka/gosample/ent/predicate"
+	"github.com/ktakenaka/gosample2021/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

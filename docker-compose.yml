@@ -3,13 +3,13 @@ version: "3"
 x-var: &ENV
   "development"
 x-var: &DB_USER
-  "gosample"
+  "gosample2021"
 x-var: &DB_PASSWORD
   "password"
 x-var: &DB_HOST
   "database"
 x-var: &DB_NAME
-  "gosample_development"
+  "gosample2021_development"
 x-var: &DB_PORT
   3306
 
@@ -22,7 +22,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - .:/gosample
+      - .:/gosample2021
     environment:
       ENV: *ENV
       DB_USER: *DB_USER

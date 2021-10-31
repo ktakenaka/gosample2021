@@ -1,4 +1,4 @@
-module github.com/ktakenaka/gosample
+module github.com/ktakenaka/gosample2021
 
 go 1.17
 

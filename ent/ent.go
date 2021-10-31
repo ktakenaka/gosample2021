@@ -8,8 +8,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/ktakenaka/gosample/ent/office"
-	"github.com/ktakenaka/gosample/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/office"
+	"github.com/ktakenaka/gosample2021/ent/sample"
 )
 
 // ent aliases to avoid import conflicts in user's code.

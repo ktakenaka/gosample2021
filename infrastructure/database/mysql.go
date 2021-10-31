@@ -10,7 +10,7 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/ktakenaka/gosample/ent"
+	"github.com/ktakenaka/gosample2021/ent"
 )
 
 // Config connection information

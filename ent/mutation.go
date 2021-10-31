@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ktakenaka/gosample/ent/office"
-	"github.com/ktakenaka/gosample/ent/predicate"
-	"github.com/ktakenaka/gosample/ent/sample"
+	"github.com/ktakenaka/gosample2021/ent/office"
+	"github.com/ktakenaka/gosample2021/ent/predicate"
+	"github.com/ktakenaka/gosample2021/ent/sample"
 
 	"entgo.io/ent"
 )

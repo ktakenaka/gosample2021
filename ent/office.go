@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/ktakenaka/gosample/ent/office"
+	"github.com/ktakenaka/gosample2021/ent/office"
 )
 
 // Office is the model entity for the Office schema.

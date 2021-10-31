@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ktakenaka/gosample/cmd/internal/config"
-	"github.com/ktakenaka/gosample/cmd/internal/db"
-	"github.com/ktakenaka/gosample/ent/office"
+	"github.com/ktakenaka/gosample2021/cmd/internal/config"
+	"github.com/ktakenaka/gosample2021/cmd/internal/db"
+	"github.com/ktakenaka/gosample2021/ent/office"
 )
 
 func main() {

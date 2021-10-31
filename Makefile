@@ -9,7 +9,7 @@ mod:
 	docker-compose exec app go mod vendor
 
 mysql:
-	docker-compose exec database mysql -u gosample -p gosample_development
+	docker-compose exec database mysql -u gosample2021 -p gosample2021_development
 
 ent-init-%:
 	$(eval ARG:= $*)

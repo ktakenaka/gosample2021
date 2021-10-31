@@ -4,7 +4,7 @@ import (
 	"errors"
 	"flag"
 
-	conf "github.com/ktakenaka/gosample/config"
+	conf "github.com/ktakenaka/gosample2021/config"
 )
 
 func Initialize() (conf.Config, error) {

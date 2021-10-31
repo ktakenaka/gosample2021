@@ -1,8 +1,8 @@
 package logger
 
 import (
-	"github.com/ktakenaka/gosample/config"
-	"github.com/ktakenaka/gosample/infrastructure/logger"
+	"github.com/ktakenaka/gosample2021/config"
+	"github.com/ktakenaka/gosample2021/infrastructure/logger"
 )
 
 func Initialize(cfg config.Config) (logger.Logger, error) {

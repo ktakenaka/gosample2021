@@ -5,8 +5,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/ktakenaka/gosample/infrastructure/database"
-	"github.com/ktakenaka/gosample/infrastructure/logger"
+	"github.com/ktakenaka/gosample2021/infrastructure/database"
+	"github.com/ktakenaka/gosample2021/infrastructure/logger"
 )
 
 type Config struct {
