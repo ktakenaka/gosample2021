@@ -10,7 +10,7 @@ import (
 )
 
 func GetClient(cfg config.Config) (client *ent.Client, release func()) {
-	cfg.DB.Options = map[string]string{"foreign_key_check": "0"}
+	// Put `map[string]string{"foreign_key_check": "0"}` to cfg.DB.Options
 	client, err := database.New(cfg.DB)
 	if err != nil {
 		panic(err)
